@@ -1,1 +1,1 @@
-This virtual examiner is a proctoring tool that helps students as well as teachers community to conduct exam online.
+This virtual examiner is a proctoring tool that helps students as well as teachers community to conduct exam online. To download the weights file click the following link: https://drive.google.com/file/d/1OQT68qQMJZ3JY126qz4bD8HtNX29SlH4/view?usp=sharing
