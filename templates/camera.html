@@ -1,0 +1,564 @@
+<html>
+   <head>
+    <style>
+        #overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: #000;
+filter:alpha(opacity=70);
+-moz-opacity:0.7;
+-khtml-opacity: 0.7;
+opacity: 0.7;
+z-index: 100;
+display: none;
+}
+.cnt223 a{
+text-decoration: none;
+}
+.popup{
+width: 100%;
+margin: 0 auto;
+display: none;
+position: fixed;
+z-index: 101;
+}
+.cnt223{
+min-width: 600px;
+width: 600px;
+min-height: 150px;
+margin: 100px auto;
+background: #f3f3f3;
+position: relative;
+z-index: 103;
+padding: 15px 35px;
+border-radius: 5px;
+box-shadow: 0 2px 5px #000;
+}
+.cnt223 p{
+clear: both;
+    color: #555555;
+    /* text-align: justify; */
+    font-size: 20px;
+    font-family: sans-serif;
+}
+.cnt223 p a{
+color: #d91900;
+font-weight: bold;
+}
+.cnt223 .x{
+float: right;
+height: 35px;
+left: 22px;
+position: relative;
+top: -25px;
+width: 34px;
+}
+.cnt223 .x:hover{
+cursor: pointer;
+}
+ 
+
+body{
+
+background-color:#f0f0f0;
+font-family:helvetica;
+}
+
+a{
+display:block;
+color:#ad5482;  
+text-decoration:none;
+font-weight:bold;
+margin-top:30px;
+}
+
+#bg{
+position:relative;
+top:20px;
+height:600px;
+width:800px;
+background:url('https://i.imgur.com/3eP9Z4O.png') center no-repeat;
+background-size:cover;
+margin-left:auto;
+margin-right:auto; 
+border:#fff 15px solid;
+}
+
+.module{
+position:relative;
+top:5%;    
+height:70%;
+width:450px;
+margin-left:auto;
+margin-right:auto;
+
+border-radius:5px;
+background:RGBA(255,255,255,1);
+  
+-webkit-box-shadow:  0px 0px 15px 0px rgba(0, 0, 0, .45);        
+box-shadow:  0px 0px 15px 0px rgba(0, 0, 0, .45);
+
+}
+
+.module ul{
+list-style-type:none;
+margin:0;
+}
+
+.tab{
+float:left;
+height:60px;
+width:25%;
+padding-top:20px;
+box-sizing:border-box;
+background:#eeeeee;  
+text-align:center;
+cursor:pointer;
+transition:background .4s;
+}
+
+.tab:first-child{  
+-webkit-border-radius: 5px 0px 0px 0px;
+border-radius: 5px 0px 0px 0px;
+}
+
+.tab:last-child{  
+-webkit-border-radius: 0px 5px 0px 0px;
+border-radius: 0px 5px 0px 0px;
+}
+
+.tab:hover{  
+background-color:rgba(0,0,0,.1);
+}
+
+.activeTab{
+background:#fff;
+}
+
+.activeTab .icon{
+opacity:1;
+}
+
+.icon{
+height:24px;
+width:24px;
+opacity:.2;
+}
+
+.form{
+float:left;
+height:86%;
+width:100%;
+box-sizing:border-box;
+padding:40px;
+}
+
+.textbox{
+height:50px;
+width:100%;
+border-radius:3px;
+border:rgba(0,0,0,.3) 2px solid;
+box-sizing:border-box;
+padding:10px;
+margin-bottom:30px;
+}
+
+.textbox:focus{
+outline:none;
+ border:rgba(24,149,215,1) 2px solid;
+ color:rgba(24,149,215,1);
+}
+
+.button{
+height:50px;
+width:10%;
+border-radius:3px;
+border:rgba(0,0,0,.3) 0px solid;
+box-sizing:border-box;
+padding:10px;
+margin-bottom:30px;
+background:#e7eedd;
+color:green;
+font-weight:bold;
+font-size: 12pt;
+transition:background .4s;
+cursor:pointer;
+}
+
+.button:hover{
+background:#80b438;
+
+}
+  </style>
+</head>
+
+<div class='popup'>
+<div class='cnt223'>
+<h1></h1>
+<p>
+<a  class='close'>Instructions:<br>
+  1.Attempting to exit full screen more than twice will force you to quit the exam.<br>
+  2.You have been watched using your camera,don't try to malpractice.<br>
+  3.Allow Camera permission to browser.
+  <center>ALL THE BEST!</center>
+
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<center><button onclick="var el = document.getElementById('full'); el.webkitRequestFullscreen();counts();">Start The Exam</button></center>
+</p>
+</div>
+</div>
+<body onload="check()">
+ <div id="full">
+  <canvas id="canvas" width="200" height="200"
+style="background-color:grey;border-radius: 190px; position:fixed" >
+</canvas>
+  <div id="bg">
+    <div class="module">
+		<iframe id="loc"style="width:500px; height:550px;" frameborder="0"></iframe>	
+    <a href="answerscriptupload"><p id="button"></p></a>
+  </div>
+ </div>
+
+<div id="camera" style="position:fixed; left:83%; top:63%;"></div>
+<a id='flaskdetection' href= /detects style="display:none">.</a> 
+
+</div>
+
+<script src="{{url_for('static', filename='webcam.min.js')}}"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+var count =0;
+function counts(){
+    var staticcounts=sessionStorage.getItem("staticcount");
+    staticcounts=parseInt(staticcounts)+parseInt(1);
+    console.log(staticcounts);
+    sessionStorage.setItem("staticcount", staticcounts);
+    if(staticcounts == '3')
+     location.replace("answerscriptupload");
+}
+function check(){
+   
+var Studentname = sessionStorage.getItem("name");
+var examyear = ("{{data.year}}");
+var exammonth = ("{{data.month}}");
+var examdate = ("{{data.date}}");
+var today = new Date();
+var hour = today.getHours();
+var minute = today.getMinutes();
+var dd = today.getDate();
+var mm = today.getMonth()+1;
+var yyyy = today.getFullYear();
+var links = new URL("{{data.link}}");
+var startinghour = ("{{data.starting_hour}}");
+var startingminute = ("{{data.starting_minute}}");
+var endinghour = ("{{data.ending_hour}}");
+var endingminute = ("{{data.ending_minute}}");
+var check ;
+
+if(dd<10)
+ dd = '0' + dd;
+if(mm<10)
+ mm = '0' + mm;
+today = yyyy+'-'+mm+'-'+dd;
+date = examyear+'-'+exammonth+'-'+examdate;
+console.log(today);
+console.log(date);
+hour = hour % 12;
+var g1 = new Date(yyyy, mm, dd, hour, minute, 00); 
+var g2 = new Date(examyear, exammonth, examdate, startinghour, startingminute, 00); 
+var g3 = new Date(examyear, exammonth, examdate, endinghour, endingminute, 00); 
+var check =0;
+//if( today == date && hour>=startinghour && minute>=startingminute)
+if(g1.getTime() >= g2.getTime())
+{
+  if(g1.getTime() <= g3.getTime())
+  {
+    check =1;
+  }
+}
+if(check == 1)
+{
+  
+  //staticcounts = document.cookie;
+  $(function(){
+    //document.cookie = staticcounts;  
+var overlay = $('<div id="overlay"></div>');
+overlay.show();
+overlay.appendTo(document.body);
+$('.popup').show();
+$('.close').click(function(){
+   staticcounts=sessionStorage.getItem("staticcount");
+    console.log(staticcounts);
+    sessionStorage.setItem("staticcount", staticcounts);
+$('.popup').hide();
+overlay.appendTo(document.body).remove();
+return false;
+});
+
+$('.x').click(function(){
+  staticcounts=parseInt(staticcounts)+parseInt(1);
+    console.log(staticcounts);
+    sessionStorage.setItem("staticcount", staticcounts);
+$('.popup').hide();
+overlay.appendTo(document.body).remove();
+return false;
+});
+});
+
+document.getElementById("button").innerHTML = "<button><h2>Finish Test<h2></button>";
+var myVar = setInterval(create, 50000);
+document.getElementById("loc").src  = links;
+Webcam.set({
+	width: 200,
+	height: 200,
+ 	image_format:'jpeg',
+	jpeg_quality: 100
+	})
+Webcam.attach('#camera');
+
+function take_snapshot() {
+        Webcam.snap( function(data_uri) { 
+        downloadImage('Image',data_uri);
+});
+}
+
+function downloadImage(name, datauri) {
+        var a = document.createElement('a');
+        a.setAttribute('download', name + '.png');
+        a.setAttribute('href', datauri);
+        a.click();
+}
+
+/*function autoClick(){
+        take_snapshot();
+        document.getElementById('flaskdetection').click();
+}*/
+
+
+function create () {
+take_snapshot();
+$.ajax({
+url:"detects", //the page containing python script
+success:function(result){
+console.log(result.abc);
+      }
+    });
+}
+
+//clock
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var radius = canvas.height / 2;
+ctx.translate(radius, radius);
+radius = radius * 0.70
+setInterval(drawClock, 1000);
+
+function drawClock() {
+  drawFace(ctx, radius);
+  drawNumbers(ctx, radius);
+  drawTime(ctx, radius);
+}
+
+function drawFace(ctx, radius) {
+  var grad;
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, 2*Math.PI);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+  grad.addColorStop(0, '#333');
+  grad.addColorStop(0.5, 'white');
+  grad.addColorStop(1, '#333');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = radius*0.1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+  ctx.fillStyle = '#333';
+  ctx.fill();
+}
+
+function drawNumbers(ctx, radius) {
+  var ang;
+  var num;
+  ctx.font = radius*0.15 + "px arial";
+  ctx.textBaseline="middle";
+  ctx.textAlign="center";
+  for(num = 1; num < 13; num++){
+    ang = num * Math.PI / 6;
+    ctx.rotate(ang);
+    ctx.translate(0, -radius*0.85);
+    ctx.rotate(-ang);
+    ctx.fillText(num.toString(), 0, 0);
+    ctx.rotate(ang);
+    ctx.translate(0, radius*0.85);
+    ctx.rotate(-ang);
+  }
+}
+
+function drawTime(ctx, radius){
+    var now = new Date();
+    var hour1 = now.getHours();
+    var minute1 = now.getMinutes();
+    var second = now.getSeconds();
+    var dd1 = now.getDate();
+    var mm1 = now.getMonth()+1;
+    var yyyy1 = now.getFullYear();
+    hour1=hour1%12;
+    if(dd<10)
+        dd = '0' + dd;
+    if(mm<10)
+        mm = '0' + mm;
+    var check1 =0;
+    var g4 = new Date(yyyy1, mm1, dd1, hour1, minute1, 00); 
+    var g5 = new Date(examyear, exammonth, examdate, startinghour, startingminute, 00); 
+    var g6 = new Date(examyear, exammonth, examdate, endinghour, endingminute, 00); 
+    if(g4.getTime() >= g5.getTime())
+    {
+      if(g4.getTime() <= g6.getTime())
+       check1 =1;
+    }
+
+    if(check1 == 1 ){
+    //hour
+    
+    hour1=(hour1*Math.PI/6)+
+    (minute1*Math.PI/(6*60))+
+    (second*Math.PI/(360*60));
+    drawHand(ctx, hour1, radius*0.5, radius*0.07);
+    //minute 
+    minute1=(minute1*Math.PI/30)+(second*Math.PI/(30*60));
+    drawHand(ctx, minute1, radius*0.8, radius*0.07);
+    // second
+    second=(second*Math.PI/30);
+    drawHand(ctx, second, radius*0.9, radius*0.02);
+    }
+    else{
+      location.replace("answerscriptupload");
+    }
+}
+
+function drawHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+}
+}
+
+else
+{  
+//clock
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var radius = canvas.height / 2;
+ctx.translate(radius, radius);
+radius = radius * 0.70
+setInterval(drawClock, 1000);
+
+function drawClock() {
+  drawFace(ctx, radius);
+  drawNumbers(ctx, radius);
+  drawTime(ctx, radius);
+}
+
+function drawFace(ctx, radius) {
+  var grad;
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, 2*Math.PI);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+  grad.addColorStop(0, '#333');
+  grad.addColorStop(0.5, 'white');
+  grad.addColorStop(1, '#333');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = radius*0.1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+  ctx.fillStyle = '#333';
+  ctx.fill();
+}
+
+function drawNumbers(ctx, radius) {
+  var ang;
+  var num;
+  ctx.font = radius*0.15 + "px arial";
+  ctx.textBaseline="middle";
+  ctx.textAlign="center";
+  for(num = 1; num < 13; num++){
+    ang = num * Math.PI / 6;
+    ctx.rotate(ang);
+    ctx.translate(0, -radius*0.85);
+    ctx.rotate(-ang);
+    ctx.fillText(num.toString(), 0, 0);
+    ctx.rotate(ang);
+    ctx.translate(0, radius*0.85);
+    ctx.rotate(-ang);
+  }
+}
+
+function drawTime(ctx, radius){
+    var now = new Date();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var startinghour = ("{{data.starting_hour}}");
+    var startingminute = ("{{data.starting_minute}}");
+    var endinghour = ("{{data.ending_hour}}");
+    var endingminute = ("{{data.ending_minute}}");
+    
+    //hour
+    hour=hour%12;
+    hour=(hour*Math.PI/6)+
+    (minute*Math.PI/(6*60))+
+    (second*Math.PI/(360*60));
+    drawHand(ctx, hour, radius*0.5, radius*0.07);
+    //minute
+    minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+    drawHand(ctx, minute, radius*0.8, radius*0.07);
+    // second
+    second=(second*Math.PI/30);
+    drawHand(ctx, second, radius*0.9, radius*0.02);
+    
+    
+}
+
+function drawHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+}
+
+alert("Test not Started");
+var link = new URL("https://thumbs.gfycat.com/WelldocumentedWhisperedAegeancat-small.gif");
+document.getElementById("loc").src  = link;
+}
+
+
+}
+
+</script>	
+<script type='text/javascript'>
+
+</script>
+
+	
+</body>
+</html>
